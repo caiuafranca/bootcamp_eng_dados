@@ -1,0 +1,73 @@
+
+FUNCIONARIO:
+LOAD 
+	Hash128(matFuncionario) AS SK_FUNCIONARIO,
+	matFuncionario AS COD_FUNCIONARIO, 
+    nomFuncionario AS NOME_FUNCIONARIO
+FROM
+Funcionario.csv
+(txt, codepage is 28591, embedded labels, delimiter is ';', msq);
+
+PRODUTO:
+LOAD 
+	Hash128(idProduto) AS SK_PRODUTO,
+	idProduto AS COD_PRODUTO, 
+     dscProduto AS DESC_PRODUTO, 
+     undMedida, 
+     numQuantidade, 
+     Categoria_idCategoria
+FROM
+Produto.csv
+(txt, codepage is 28591, embedded labels, delimiter is ';', msq);
+JOIN
+CATEGORIA:
+LOAD idCategoria as COD_CATEGORIA, 
+     dscCategoria AS DESC_CATEGORIA
+FROM
+Categoria.csv
+(txt, codepage is 28591, embedded labels, delimiter is ';', msq);
+
+CLIENTE:
+LOAD 
+	Hash128(idClientes) AS SK_CLIENTE,
+	idClientes AS COD_CLIENTE, 
+     nomCliente AS NOME_CLIENTE, 
+     estCivil, 
+     numTelefone, 
+     Regiao_idRegiao AS COD_TERRITORIO
+FROM
+Cliente.csv
+(txt, codepage is 28591, embedded labels, delimiter is ';', msq);
+JOIN
+REGIAO:
+LOAD idRegiao AS COD_REGIAO, 
+     nomRegiao, 
+     nomCidade, 
+     sigUF, 
+     Territorio_idTerritorio AS COD_TERRITORIO
+FROM
+Regiao.csv
+(txt, codepage is 28592, embedded labels, delimiter is ';', msq);
+JOIN
+TERRITORIO:
+LOAD idTerritorio AS COD_TERRITORIO, 
+     dscTerritorio
+FROM
+Territorio.csv
+(txt, codepage is 28592, embedded labels, delimiter is ';', msq);
+
+VENDAS:
+LOAD 
+	 Hash128(idVendas) AS SK_VENDAS,
+	 idVendas AS COD_VENDAS, 
+     dscOrdemVendas, 
+     qtdUnidadeVendas AS QTD_VENDAS, 
+     NUM(vlrVendas,'#.##0,00') AS VALOR_VENDA, 
+     Hash128(Clientes_idClientes) AS SK_CLIENTE, 
+     Hash128(Produto_idProduto) AS SK_PRODUTO, 
+     Hash128(Funcionario_matFuncionario) AS SK_FUNCIONARIO, 
+     DATE(datVendas, 'DD/MM/YYYY') as DATA,
+     num(date(datVendas,'DD/MM/YYYY')) as SK_DATA
+FROM
+Vendas.csv
+(txt, codepage is 28591, embedded labels, delimiter is ';', msq);
